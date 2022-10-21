@@ -5,7 +5,38 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Odin Project: Rock Paper Scissors (console)</title>
+    <link href="style.css" rel="stylesheet" />
     <script src="script.js" defer></script>
   </head>
-  <body></body>
+  <body>
+    <div class="game">
+      <div class="display">
+        <div class="play-area">
+          <div class="round-display hidden">
+            <div class="player-display">
+              <h3>You:</h3>
+              <img src="images/question.png" />
+            </div>
+            <div class="comp-display">
+              <h3>Computer:</h3>
+              <img src="images/question.png" />
+            </div>
+          </div>
+          <p class="message">Are you ready to play?</p>
+          <button>Start</button>
+        </div>
+        <ul class="score">
+          <li><span class="score-title">Round: </span><span class="score-round">0</span></li>
+          <li><span class="score-title">Wins: </span><span class="score-wins">0</span></li>
+          <li><span class="score-title">Losses: </span><span class="score-losses">0</span></li>
+          <li><span class="score-title">Draws: </span><span class="score-draws">0</span></li>
+        </ul>
+      </div>
+      <div class="buttons">
+        <button id="btnRock" data-rps="Rock" disabled></button>
+        <button id="btnPaper" data-rps="Paper" disabled></button>
+        <button id="btnScissors" data-rps="Scissors" disabled></button>
+      </div>
+    </div>
+  </body>
 </html>
