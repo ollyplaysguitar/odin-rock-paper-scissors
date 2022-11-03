@@ -1,9 +1,5 @@
 const game = {};
 
-replayBtn = document.createElement("button");
-replayBtn.textContent = "Play Again?";
-replayBtn.classList.add("replay");
-
 const ui = {
   playArea: document.querySelector(".play-area"),
   message: document.querySelector(".message"),
@@ -14,6 +10,9 @@ const ui = {
   scoreDraws: document.querySelector(".score-draws"),
   playerDisplayImg: document.querySelector(".player-display img"),
   compDisplayImg: document.querySelector(".comp-display img"),
+  audioWin: document.querySelector(".audio-win"),
+  audioLose: document.querySelector(".audio-lose"),
+  audioDraw: document.querySelector(".audio-draw"),
 
   updateScores: function () {
     this.scoreRounds.textContent = 5 - game.rounds;
@@ -31,9 +30,8 @@ const ui = {
     ui.message.append(result ? `You won!` : `You lost!`);
   },
 
-  gameOver: function () {
-    //this.message.textContent = "This is the end!";
-    this.message.textContent = `Game over, Score: ${game.wins}`;
+  gameOver: function (result) {
+    this.message.textContent = `Game over, you ${result} Your Score Was: ${game.wins}`;
     startBtn.textContent = "Play Again?";
     startBtn.classList.remove("hidden");
     buttons.forEach((btn) => btn.setAttribute("disabled", true));
@@ -56,8 +54,10 @@ const setup = function (rounds) {
 };
 
 const gameOver = function () {
-  // pass
-  ui.gameOver();
+  if (game.wins === game.losses) {
+    return ui.gameOver("Drew!");
+  }
+  return game.wins > game.losses ? ui.gameOver("Won!") : ui.gameOver("Lost!");
 };
 
 const getComputerChoice = function () {
@@ -80,17 +80,19 @@ const playRound = async function (playerSelection, computerSelection) {
   ui.playerDisplayImg.src = `images/${playerSelection}.png`;
 
   ui.message.textContent = "3";
-  await sleep(300);
+  await sleep(250);
   ui.message.textContent = "2";
-  await sleep(300);
+  await sleep(250);
   ui.message.textContent = "1";
-  await sleep(300);
+  await sleep(250);
 
   ui.compDisplayImg.src = `images/${computerSelection}.png`;
 
   if (playerSelection === computerSelection) {
     game.draws++;
     ui.showRoundResult("Draw");
+    ui.audioDraw.currentTime = 0;
+    ui.audioDraw.play();
   } else {
     let winner = false;
 
@@ -98,15 +100,24 @@ const playRound = async function (playerSelection, computerSelection) {
     winner = playerSelection === "Paper" && computerSelection === "Rock" ? true : winner;
     winner = playerSelection === "Scissors" && computerSelection === "Paper" ? true : winner;
 
-    if (winner) game.wins++;
-    if (!winner) game.losses++;
-    console.log("wins: ", game.wins, " losses: ", game.losses, " draws: ", game.draws);
+    if (winner) {
+      game.wins++;
+      ui.audioWin.currentTime = 0;
+      ui.audioWin.play();
+    }
+    if (!winner) {
+      game.losses++;
+      ui.audioLose.currentTime = 0;
+      ui.audioLose.play();
+    }
+
     ui.showRoundResult(winner);
   }
 
   ui.updateScores();
 
   if (game.rounds <= 0) {
+    await sleep(400);
     gameOver();
     return;
   }
